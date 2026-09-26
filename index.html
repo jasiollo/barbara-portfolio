@@ -3,252 +3,341 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barbara Mrowińska | Tancerka</title>
+    <title>Barbara Mrowińska | Professional Dancer</title>
+    <!-- Zewnętrzna czcionka z Google Fonts dla nowoczesnego wyglądu -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0a0a0a;
-            --text-color: #f5f5f5;
-            --accent: #d4af37; /* Złoty akcent */
-            --gray: #222;
+            --bg-color: #050505;
+            --text-color: #ffffff;
+            --accent: #d4af37; /* Złoty premium */
+            --accent-glow: rgba(212, 175, 55, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
+        /* Niestandardowy pasek przewijania */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 0 20px;
         }
 
-        header {
+        /* Efekt pojawiania się przy scrollowaniu */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* NAGŁÓWEK (HERO) */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            padding: 80px 0 40px;
-        }
-
-        header h1 {
-            font-size: 3rem;
-            font-weight: 300;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-        }
-
-        .bio-box {
-            background-color: var(--gray);
-            padding: 15px;
-            border-radius: 8px;
-            display: inline-block;
-            margin-bottom: 30px;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-        }
-
-        h2 {
-            font-size: 2rem;
-            font-weight: 400;
-            margin: 60px 0 30px;
-            text-align: left;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-        }
-
-        /* Sekcja Wideo */
-        .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* Proporcje 16:9 */
+            background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero h2 {
+            font-weight: 200;
+            font-size: 1.2rem;
+            letter-spacing: 6px;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 20px 40px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* WSPÓLNE NAGŁÓWKI SEKCJI */
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 200;
+            margin: 100px 0 40px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        .section-title span {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* WIDEO */
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
             height: 0;
+            border-radius: 12px;
             overflow: hidden;
-            border-radius: 8px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            border: 1px solid var(--glass-border);
         }
-
-        .video-container iframe {
+        .video-wrapper iframe {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
+            top: 0; left: 0; width: 100%; height: 100%;
         }
 
-        /* Sekcja Polaroidy / Siatka */
-        .gallery {
+        /* POLAROIDY */
+        .grid-gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card-img {
+            position: relative;
+            aspect-ratio: 3/4;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .card-img img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .card-img::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .card-img:hover img {
+            transform: scale(1.08);
+        }
+        .card-img:hover::after {
+            opacity: 1;
+        }
+
+        /* PORTFOLIO / KATEGORIE */
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
         }
 
-        .gallery-item {
+        .service-box {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 40px 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+
+        .service-box:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px var(--accent-glow);
+        }
+
+        .service-box h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* KONTAKT */
+        .footer {
+            margin-top: 100px;
+            padding: 100px 0 50px;
+            text-align: center;
+            background: linear-gradient(to bottom, transparent, #0a0a0a);
+        }
+
+        .btn-gold {
+            display: inline-block;
+            padding: 18px 50px;
+            background: transparent;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 2px solid var(--accent);
+            border-radius: 50px;
+            margin-top: 30px;
+            transition: all 0.4s ease;
             position: relative;
-            aspect-ratio: 3/4; /* Pionowe zdjęcia */
-            background-color: var(--gray);
-            border-radius: 8px;
             overflow: hidden;
         }
 
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
+        .btn-gold:hover {
+            background: var(--accent);
+            color: #000;
+            box-shadow: 0 0 30px var(--accent-glow);
         }
 
-        .gallery-item:hover img {
-            transform: scale(1.05);
+        .social-links {
+            margin-top: 50px;
         }
 
-        /* Sekcja Kategorie Taneczne */
-        .categories {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-
-        .category-card {
-            background-color: var(--gray);
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
+        .social-links a {
+            color: #888;
             text-decoration: none;
-            color: var(--text-color);
-            transition: background 0.3s;
+            margin: 0 20px;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
         }
 
-        .category-card:hover {
-            background-color: #333;
-            color: var(--accent);
-        }
-
-        .category-card h3 {
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-
-        /* Sekcja Kontakt */
-        footer {
-            text-align: center;
-            padding: 80px 0 40px;
-        }
-
-        .contact-btn {
-            display: inline-block;
-            padding: 15px 40px;
-            background-color: var(--text-color);
-            color: var(--bg-color);
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 30px;
-            margin-top: 20px;
-            transition: background 0.3s;
-        }
-
-        .contact-btn:hover {
-            background-color: var(--accent);
-        }
-
-        .socials {
-            margin-top: 30px;
-        }
-
-        .socials a {
-            color: var(--text-color);
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 1.2rem;
-            transition: color 0.3s;
-        }
-
-        .socials a:hover {
-            color: var(--accent);
+        .social-links a:hover {
+            color: #fff;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        
-        <!-- NAGŁÓWEK -->
-        <header>
-            <h1>BARBARA MROWIŃSKA</h1>
-            <div class="bio-box">
-                Tancerka Komercyjna | Warszawa | Wzrost: 168 cm | Włosy: Brunetka
+    <!-- HERO SECTION -->
+    <header class="hero">
+        <div class="reveal">
+            <h1>Barbara Mrowińska</h1>
+            <h2>Professional Dancer</h2>
+            <div class="glass-panel">
+                WARSZAWA | WZROST: 168 CM | WŁOSY: BRUNETKA
             </div>
-            <p>Heels • Hip-Hop • Eventy • Teatr</p>
-        </header>
+        </div>
+    </header>
 
+    <div class="container">
         <!-- SHOWREEL -->
-        <section>
-            <h2>Showreel 2026</h2>
-            <div class="video-container">
-                <!-- Podmień link w src="" na jej YouTube. Pamiętaj by był to link "/embed/" -->
+        <section class="reveal">
+            <h2 class="section-title">Showreel <span>2026</span></h2>
+            <div class="video-wrapper">
                 <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
             </div>
         </section>
 
-        <!-- POLAROIDY -->
-        <section>
-            <h2>Digitals / Polaroidy</h2>
-            <div class="gallery">
-                <div class="gallery-item">
-                    <!-- Podmień src na link do jej zdjęcia -->
+        <!-- DIGITALS -->
+        <section class="reveal">
+            <h2 class="section-title">Digitals <span>& Polaroidy</span></h2>
+            <div class="grid-gallery">
+                <div class="card-img">
                     <img src="https://images.unsplash.com/photo-1547153760-18fc86324498?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Sylwetka">
                 </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1515664069236-68a74c369d97?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Twarz En Face">
+                <div class="card-img">
+                    <img src="https://images.unsplash.com/photo-1515664069236-68a74c369d97?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Twarz">
                 </div>
-                <div class="gallery-item">
+                <div class="card-img">
                     <img src="https://images.unsplash.com/photo-1508214751196-bfd943b59df0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Profil">
                 </div>
             </div>
         </section>
 
-        <!-- PORTFOLIO / KATEGORIE -->
-        <section>
-            <h2>Portfolio i Projekty</h2>
-            <div class="categories">
-                <!-- Po kliknięciu mogą otwierać podstrony. Na razie usunąłem linki -->
-                <div class="category-card">
+        <!-- KATEGORIE -->
+        <section class="reveal">
+            <h2 class="section-title">Projekty <span>& Style</span></h2>
+            <div class="services">
+                <div class="service-box">
                     <h3>👠 Heels</h3>
-                    <p>Choreografie i pokazy</p>
+                    <p>Choreografie komercyjne, pokazy i teledyski.</p>
                 </div>
-                <div class="category-card">
+                <div class="service-box">
                     <h3>👟 Hip-Hop</h3>
-                    <p>Zawody i formacje</p>
+                    <p>Zawody, formacje taneczne i warsztaty.</p>
                 </div>
-                <div class="category-card">
-                    <h3>🎭 Teatr / TV</h3>
-                    <p>Spektakle i eventy</p>
+                <div class="service-box">
+                    <h3>🎭 Teatr</h3>
+                    <p>Spektakle taneczne i duże eventy telewizyjne.</p>
                 </div>
-                <div class="category-card">
+                <div class="service-box">
                     <h3>🎤 Muzyka</h3>
-                    <p>Covery i własne utwory</p>
+                    <p>Własna twórczość i covery wokalne.</p>
                 </div>
             </div>
         </section>
-
-        <!-- KONTAKT -->
-        <footer>
-            <h2>Współpraca</h2>
-            <p>Jestem otwarta na booking komercyjny, zlecenia choreograficzne i udział w pokazach.</p>
-            
-            <a href="mailto:kontakt@barbaramrowinska.pl" class="contact-btn">Napisz do mnie</a>
-
-            <div class="socials">
-                <a href="https://instagram.com/jej_nazwa" target="_blank">Instagram</a>
-                <a href="https://facebook.com/jej_nazwa" target="_blank">Facebook</a>
-            </div>
-        </footer>
-
     </div>
 
+    <!-- STOPKA / KONTAKT -->
+    <footer class="footer reveal">
+        <h2>Gotowa na nowy projekt?</h2>
+        <p style="color: #888; margin-top: 10px;">Booking komercyjny, pokazy i choreografia.</p>
+        
+        <a href="mailto:kontakt@barbaramrowinska.pl" class="btn-gold">Napisz do mnie</a>
+
+        <div class="social-links">
+            <a href="https://instagram.com/jej_nazwa" target="_blank">Instagram</a>
+            <a href="https://facebook.com/jej_nazwa" target="_blank">Facebook</a>
+            <a href="#" target="_blank">YouTube</a>
+        </div>
+    </footer>
+
+    <!-- SKRYPT DO ANIMACJI POJAWIANIA SIĘ (FADE-IN) -->
+    <script>
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); // Odpalenie na starcie
+    </script>
 </body>
 </html>
